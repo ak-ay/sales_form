@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { buildEmailContent } from '@/utils/emailTemplates';
+import { sendEmail } from '@/utils/emailSender';
+import type { SendEmailParams } from '@/utils/emailTypes';
 
 /**
  * API Route for submitting enrollment data to Google Sheets
@@ -90,18 +93,50 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('[Server] ✅ Data successfully submitted to Google Sheets');
     const tokenNumber = typeof result.tokenNumber === 'number'
       ? result.tokenNumber
       : typeof result.rowNumber === 'number'
         ? Math.max(result.rowNumber - 1, 1)
         : undefined;
 
+    let emailSent = false;
+    let emailError: string | null = null;
+    try {
+      const smtpFrom = process.env.SMTP_FROM || process.env.SMTP_USER;
+      if (!smtpFrom) {
+        throw new Error('SMTP is not configured');
+      }
+
+      const emailPayload: SendEmailParams = {
+        email: body.email,
+        fullName: body.name,
+        enrollmentId: body.enrollmentId || '',
+        reminderType: 'confirmation',
+        counselorName: body.counselor || 'Not Selected',
+        tokenNumber: tokenNumber,
+      };
+
+      const content = buildEmailContent(emailPayload);
+      await sendEmail({
+        from: smtpFrom,
+        to: body.email,
+        subject: content.subject,
+        html: content.html,
+      });
+      emailSent = true;
+    } catch (error) {
+      emailError = error instanceof Error ? error.message : 'Unknown email error';
+      console.error('[Server] ❌ Email send failed:', emailError);
+    }
+
+    console.log('[Server] ✅ Data successfully submitted to Google Sheets');
     return NextResponse.json({
       success: true,
       message: 'Enrollment data submitted successfully',
       rowNumber: result.rowNumber,
       tokenNumber: tokenNumber,
+      emailSent: emailSent,
+      emailError: emailError,
     });
 
   } catch (error) {

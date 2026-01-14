@@ -9,7 +9,6 @@ import CoursePreferencesStep from './CoursePreferencesStep';
 import PaymentModeStep from './PaymentModeStep';
 import PriceAndCounselorStep from './PriceAndCounselorStep';
 import { submitToGoogleSheets } from '@/utils/googleSheetsService';
-import { sendEnrollmentConfirmationEmail } from '@/utils/emailService';
 import { createEnrollmentRecord, isSupabaseConfigured } from '@/utils/enrollmentService';
 import { getCounselorDisplay } from '@/utils/counselors';
 
@@ -212,23 +211,6 @@ const EnrollmentFormInteractive = () => {
         }
       } else {
         console.warn('⚠️ Supabase not configured. Skipping enrollment record creation.');
-      }
-
-      // ✅ Send enrollment confirmation email
-      console.log('📧 Sending enrollment confirmation email...');
-      const emailResult = await sendEnrollmentConfirmationEmail({
-        email: formData.email,
-        fullName: formData.fullName,
-        enrollmentId: enrollmentId,
-        counselorName: counselorName, // ✅ NEW: Include counselor name
-        tokenNumber: typeof sheetsResult.tokenNumber === 'number' ? sheetsResult.tokenNumber : undefined,
-      });
-
-      if (!emailResult.success) {
-        console.warn('⚠️ Confirmation email failed to send:', emailResult.error);
-        // Don't fail enrollment if email fails - just log the issue
-      } else {
-        console.log('✅ Confirmation email sent successfully');
       }
 
       setIsSubmitting(false);

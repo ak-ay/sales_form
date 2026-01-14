@@ -24,7 +24,7 @@ This app sends enrollment emails directly from a Next.js API route using SMTP.
 
 ## What Gets Sent
 
-- **Confirmation email** is sent immediately after successful enrollment.
+- **Confirmation email** is sent immediately after successful enrollment (server-side in `/api/submit-enrollment`).
 - **Reminders** (`day5`, `day9`, `day10`, `expiry`) are supported by the API route and can be auto-triggered via the scheduler endpoint.
 
 ## Testing
