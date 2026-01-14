@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Colors - Apple-like Blue */
+    --color-primary: #0A84FF;
+    --color-primary-foreground: #FFFFFF; /* white */
+    
+    /* Secondary Colors - Charcoal */
+    --color-secondary: #1F2937;
+    --color-secondary-foreground: #FFFFFF; /* white */
+    
+    /* Accent Colors - Apple Green */
+    --color-accent: #34C759;
+    --color-accent-foreground: #FFFFFF; /* white */
+    
+    /* Background Colors - Soft Neutral */
+    --color-background: #F5F5F7;
+    --color-foreground: #1D1D1F;
+    
+    /* Surface Colors */
+    --color-card: #FFFFFF;
+    --color-card-foreground: #1D1D1F;
+    
+    /* Popover Colors */
+    --color-popover: #FFFFFF;
+    --color-popover-foreground: #1D1D1F;
+    
+    /* Muted Colors */
+    --color-muted: #F2F2F2;
+    --color-muted-foreground: #6B7280;
+    
+    /* Border & Input */
+    --color-border: #E5E7EB;
+    --color-input: #E5E7EB;
+    --color-ring: #0A84FF;
+    
+    /* Status Colors */
+    --color-success: #34C759;
+    --color-success-foreground: #FFFFFF; /* white */
+    
+    --color-warning: #FF9F0A;
+    --color-warning-foreground: #FFFFFF; /* white */
+    
+    --color-error: #FF453A;
+    --color-error-foreground: #FFFFFF; /* white */
+    
+    --color-destructive: #FF453A;
+    --color-destructive-foreground: #FFFFFF; /* white */
+    
+    /* Additional Brand Colors */
+    --color-navy-deep: #0B1220;
+    --color-gold-premium: #34C759;
+    --color-text-primary: #1D1D1F;
+    --color-text-secondary: #6B7280;
+    --color-surface: #F5F5F7;
+    
+    /* Typography */
+    --font-headline: 'Sora', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+    --font-cta: 'Manrope', sans-serif;
+    --font-accent: 'JetBrains Mono', monospace;
+    
+    /* Spacing */
+    --spacing-base: 8px;
+    --vertical-rhythm: 1.5rem;
+    
+    /* Shadows - Softer & More Subtle */
+    --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 1px rgba(15, 23, 42, 0.03);
+    --shadow-interactive: 0 8px 20px rgba(15, 23, 42, 0.08);
+    --shadow-elevated: 0 18px 40px rgba(15, 23, 42, 0.12);
+    --shadow-premium: 0 30px 60px rgba(15, 23, 42, 0.16);
+    
+    /* Border Radius */
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
+    
+    /* Transitions */
+    --transition-base: 300ms ease-out;
+    --transition-fast: 200ms ease-out;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    background-image: radial-gradient(1200px 600px at 50% -200px, rgba(10, 132, 255, 0.12), transparent 60%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-headline);
+  }
+  
+  button {
+    font-family: var(--font-cta);
+  }
+}
