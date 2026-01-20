@@ -11,6 +11,7 @@ export interface SendEmailParams {
   batchMonth?: string;
   trainingMode?: string;
   paymentModeLabel?: string;
+  preferredTimeSlot?: string;
   totalFee?: number;
   discountFee?: number;
   finalFee?: number;

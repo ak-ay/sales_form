@@ -16,6 +16,7 @@ export default function EmailPreviewPage() {
     batchMonth: 'march-2026',
     trainingMode: 'online',
     paymentModeLabel: 'Full Payment',
+    preferredTimeSlot: 'morning',
     totalFee: 30000,
     discountFee: 10000,
     finalFee: 20000,

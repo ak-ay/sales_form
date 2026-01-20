@@ -18,6 +18,7 @@ interface EnrollmentData {
   batchMonth?: string;
   trainingMode?: string;
   paymentModeLabel?: string;
+  preferredTimeSlot?: string;
   totalFee?: number;
   discountFee?: number;
   finalFee?: number;
@@ -68,6 +69,7 @@ export async function submitToGoogleSheets(
     batchMonth: data.batchMonth,
     trainingMode: data.trainingMode,
     paymentModeLabel: data.paymentModeLabel,
+    preferredTimeSlot: data.preferredTimeSlot,
     totalFee: data.totalFee,
     discountFee: data.discountFee,
     finalFee: data.finalFee,

@@ -118,6 +118,7 @@ export async function POST(request: NextRequest) {
         batchMonth: body.batchMonth || body.batch_month,
         trainingMode: body.trainingMode || body.mode,
         paymentModeLabel: body.paymentModeLabel,
+        preferredTimeSlot: body.preferredTimeSlot || body.time_slot,
         totalFee: body.totalFee,
         discountFee: body.discountFee,
         finalFee: body.finalFee,

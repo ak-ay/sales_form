@@ -17,6 +17,10 @@ export function buildEmailContent(params: SendEmailParams) {
     if (!value) return 'Not specified';
     return value.charAt(0).toUpperCase() + value.slice(1);
   };
+  const formatTimeSlot = (value?: string) => {
+    if (!value) return 'Not specified';
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  };
   const formatCurrency = (value?: number) =>
     typeof value === 'number' ? `₹${value.toLocaleString('en-IN')}` : 'Not specified';
 
@@ -59,7 +63,7 @@ export function buildEmailContent(params: SendEmailParams) {
               <table class="details">
                 <tr>
                   <td>Selected Course:</td>
-                  <td><strong>${formatTrainingMode(params.trainingMode)}</strong></td>
+                  <td><strong>${formatTrainingMode(params.trainingMode)} Batch</strong></td>
                 </tr>
                 <tr>
                   <td>Selected Batch:</td>
@@ -69,6 +73,14 @@ export function buildEmailContent(params: SendEmailParams) {
                   <td>Mode of Payment:</td>
                   <td><strong>${formatText(params.paymentModeLabel)}</strong></td>
                 </tr>
+                ${
+                  params.trainingMode === 'offline'
+                    ? `<tr>
+                  <td>Time Slot:</td>
+                  <td><strong>${formatTimeSlot(params.preferredTimeSlot)}</strong></td>
+                </tr>`
+                    : ''
+                }
                 <tr>
                   <td>Total Course Fee:</td>
                   <td><strong>${formatCurrency(params.totalFee)}</strong></td>

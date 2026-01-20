@@ -197,6 +197,7 @@ const EnrollmentFormInteractive = () => {
         batchMonth: formData.preferredBatchMonth,
         trainingMode: formData.learningMode,
         paymentModeLabel,
+        preferredTimeSlot: formData.preferredTimeSlot,
         totalFee,
         discountFee,
         finalFee,
