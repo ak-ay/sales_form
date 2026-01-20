@@ -179,6 +179,7 @@ const EnrollmentFormInteractive = () => {
       const discountFee = hasDiscount && typeof paymentOption?.price === 'number' && typeof paymentOption?.discountedPrice === 'number'
         ? paymentOption.price - paymentOption.discountedPrice
         : 0;
+      const paymentModeLabel = paymentOption?.label;
       
       // CRITICAL: Submit to Google Sheets - enrollment will fail if this fails
       console.log('📊 Submitting enrollment data to Google Sheets...');
@@ -192,9 +193,10 @@ const EnrollmentFormInteractive = () => {
         preferredTimeSlot: formData.preferredTimeSlot,
         paymentMode: formData.paymentMode,
         selectedCounselor: counselorName,
-        courseName: paymentOption?.label,
+        courseName: formData.learningMode,
         batchMonth: formData.preferredBatchMonth,
         trainingMode: formData.learningMode,
+        paymentModeLabel,
         totalFee,
         discountFee,
         finalFee,

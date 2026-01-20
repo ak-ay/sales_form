@@ -10,6 +10,7 @@ export interface SendEmailParams {
   courseName?: string;
   batchMonth?: string;
   trainingMode?: string;
+  paymentModeLabel?: string;
   totalFee?: number;
   discountFee?: number;
   finalFee?: number;

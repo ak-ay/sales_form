@@ -59,15 +59,15 @@ export function buildEmailContent(params: SendEmailParams) {
               <table class="details">
                 <tr>
                   <td>Selected Course:</td>
-                  <td><strong>${formatText(params.courseName)}</strong></td>
+                  <td><strong>${formatTrainingMode(params.trainingMode)}</strong></td>
                 </tr>
                 <tr>
                   <td>Selected Batch:</td>
                   <td><strong>${formatBatchMonth(params.batchMonth)}</strong></td>
                 </tr>
                 <tr>
-                  <td>Mode of Training:</td>
-                  <td><strong>${formatTrainingMode(params.trainingMode)}</strong></td>
+                  <td>Mode of Payment:</td>
+                  <td><strong>${formatText(params.paymentModeLabel)}</strong></td>
                 </tr>
                 <tr>
                   <td>Total Course Fee:</td>
