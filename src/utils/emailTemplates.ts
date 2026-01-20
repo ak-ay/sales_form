@@ -6,10 +6,23 @@ export function buildEmailContent(params: SendEmailParams) {
     { year: 'numeric', month: 'long', day: 'numeric' }
   );
   const counselorName = params.counselorName || 'Not Selected';
+  const formatText = (value?: string) => value?.trim() ? value : 'Not specified';
+  const formatBatchMonth = (value?: string) => {
+    if (!value) return 'Not specified';
+    return value
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, match => match.toUpperCase());
+  };
+  const formatTrainingMode = (value?: string) => {
+    if (!value) return 'Not specified';
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  };
+  const formatCurrency = (value?: number) =>
+    typeof value === 'number' ? `₹${value.toLocaleString('en-IN')}` : 'Not specified';
 
   if (params.reminderType === 'confirmation') {
     return {
-      subject: '✅ TradeMax Academy Pre-Booking Confirmation',
+      subject: 'Registration Confirmation & Course Details – TradeMax Academy',
       html: `
         <!DOCTYPE html>
         <html>
@@ -19,8 +32,10 @@ export function buildEmailContent(params: SendEmailParams) {
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
             .header { background: linear-gradient(135deg, #10b981 0%, #0f766e 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-            .token { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 16px; border-radius: 8px; text-align: center; font-weight: bold; margin: 20px 0; }
-            .counselor-box { background: #e0f2fe; border-left: 4px solid #0ea5e9; padding: 15px; margin: 20px 0; border-radius: 5px; }
+            .section-title { margin: 24px 0 8px; font-size: 18px; }
+            .details { width: 100%; border-collapse: collapse; margin: 10px 0 6px; }
+            .details td { padding: 8px 6px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+            .note { font-size: 12px; color: #555; margin-top: 8px; }
             .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
           </style>
         </head>
@@ -28,33 +43,75 @@ export function buildEmailContent(params: SendEmailParams) {
           <div class="container">
             <div class="header">
               <h1>🎓 TradeMax Academy</h1>
-              <p>Pre-Booking Confirmed</p>
+              <p>Registration Confirmation</p>
             </div>
             <div class="content">
-              <h2>Dear ${params.fullName},</h2>
-              <p>You have successfully pre-booked your seat at TradeMax Academy.</p>
-              <p>Please complete the remaining payment within <strong>10 days</strong> (by ${deadline}).</p>
+              <p>Greetings from TradeMax Academy 👋</p>
+              <p>Thank you for completing your registration with us. Your seat reservation is successful. We’re excited to have you onboard and are pleased to share the details of your selected program.</p>
 
+              <h3 class="section-title">📌 Registration Details</h3>
               ${
                 typeof params.tokenNumber === 'number'
-                  ? `<div class="token">Your Token Number: #${params.tokenNumber}</div>`
+                  ? `<p><strong>Token Number:</strong> #${params.tokenNumber}</p>`
                   : ''
               }
+              <p><strong>Assigned Counselor:</strong> ${counselorName}</p>
+              <table class="details">
+                <tr>
+                  <td>Selected Course:</td>
+                  <td><strong>${formatText(params.courseName)}</strong></td>
+                </tr>
+                <tr>
+                  <td>Selected Batch:</td>
+                  <td><strong>${formatBatchMonth(params.batchMonth)}</strong></td>
+                </tr>
+                <tr>
+                  <td>Mode of Training:</td>
+                  <td><strong>${formatTrainingMode(params.trainingMode)}</strong></td>
+                </tr>
+                <tr>
+                  <td>Total Course Fee:</td>
+                  <td><strong>${formatCurrency(params.totalFee)}</strong></td>
+                </tr>
+                <tr>
+                  <td>Special Registration Discount:</td>
+                  <td><strong>${formatCurrency(params.discountFee)}</strong></td>
+                </tr>
+                <tr>
+                  <td>Final Payable Amount:</td>
+                  <td><strong>${formatCurrency(params.finalFee)}</strong></td>
+                </tr>
+              </table>
+              <p class="note">(The above discount has been applied based on counselor approval as part of our registration offer.)</p>
 
-              <div class="counselor-box">
-                <p style="margin: 0;"><strong>👤 Your Assigned Counselor:</strong></p>
-                <p style="margin: 5px 0 0 0; font-size: 18px; color: #0ea5e9;"><strong>${counselorName}</strong></p>
-              </div>
-
-              <p><strong>Enrollment Details:</strong></p>
+              <h3 class="section-title">🎓 What Happens Next?</h3>
+              <p>To help you make a confident decision, we offer a 3-Day Trial Period:</p>
               <ul>
-                <li>Enrollment ID: <strong>${params.enrollmentId}</strong></li>
-                <li>Student Name: <strong>${params.fullName}</strong></li>
-                <li>Payment Deadline: <strong>${deadline}</strong></li>
+                <li>Attend live sessions</li>
+                <li>Experience our teaching methodology</li>
+                <li>Interact with trainers and counselors</li>
+                <li>Evaluate course content and delivery</li>
               </ul>
 
-              <p><strong>NB:</strong> Please ignore this email if payment is already completed.</p>
-              <p>Best regards,<br><strong>TradeMax Academy Team</strong></p>
+              <h3 class="section-title">💯 Refund &amp; Satisfaction Policy</h3>
+              <p>Your satisfaction is our priority.</p>
+              <ul>
+                <li>If you feel the program is not suitable, you may opt out within the first 3 days</li>
+                <li>A refund will be processed as per our refund policy</li>
+                <li>No hidden conditions — complete transparency</li>
+              </ul>
+
+              <h3 class="section-title">📞 Need Help or Clarification?</h3>
+              <p>Our team is always available to support you. Feel free to reach out to your assigned counselor, <strong>${counselorName}</strong>, for any assistance regarding:</p>
+              <ul>
+                <li>Batch details</li>
+                <li>Payment process</li>
+                <li>Course curriculum</li>
+                <li>Trial session access</li>
+              </ul>
+              <p>We look forward to helping you achieve your learning and career goals with TradeMax Academy 🚀</p>
+
+              <p>Warm regards,<br><strong>Admissions Team<br>TradeMax Academy</strong></p>
             </div>
             <div class="footer">
               <p>© 2026 TradeMax Academy. All rights reserved.</p>

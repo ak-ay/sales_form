@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Icon from '@/components/ui/AppIcon';
 import { counselors } from '@/utils/counselors';
+import { getPaymentOptions } from '@/utils/pricing';
 
 interface PriceAndCounselorStepProps {
   formData: {
@@ -17,9 +18,10 @@ interface PriceAndCounselorStepProps {
 }
 
 const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCounselorStepProps) => {
-  const [availableCounselors, setAvailableCounselors] = useState(counselors);
+  const [availableCounselors, setAvailableCounselors] = useState<typeof counselors>([]);
   const [counselorLoadError, setCounselorLoadError] = useState('');
   const [counselorSearch, setCounselorSearch] = useState('');
+  const [isLoadingCounselors, setIsLoadingCounselors] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -33,15 +35,21 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
           throw new Error(result?.error || 'Failed to load counselors');
         }
 
-        if (isMounted && Array.isArray(result.counselors) && result.counselors.length > 0) {
+        if (isMounted && Array.isArray(result.counselors)) {
           setAvailableCounselors(result.counselors);
         }
       } catch (error) {
         if (isMounted) {
-          setCounselorLoadError(
-            error instanceof Error ? error.message : 'Failed to load counselors'
-          );
+          const message = error instanceof Error ? error.message : 'Failed to load counselors';
+          setCounselorLoadError(message);
+          if (message.includes('COUNSELORS_SHEET_CSV_URL')) {
+            setAvailableCounselors(counselors);
+          } else {
+            setAvailableCounselors([]);
+          }
         }
+      } finally {
+        if (isMounted) setIsLoadingCounselors(false);
       }
     };
 
@@ -51,30 +59,7 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
       isMounted = false;
     };
   }, []);
-  const offlinePaymentOptions = [
-    { value: 'full-payment', label: 'Full Payment', price: 47000, discountedPrice: 30000 },
-  ];
-
-  const onlinePaymentOptions = [
-    { value: 'full-payment', label: 'Full Payment', price: 30000, discountedPrice: 20000 },
-    { 
-      value: 'part-payment', 
-      label: 'Part Payment',
-      price: 36000,
-      discountedPrice: 23600,
-      installments: {
-        regular: '₹12,000 Phase 1 + ₹12,000 Phase 2 + ₹12,000 Phase 3',
-        discounted: '₹5,900 Phase 1 + ₹8,850 Phase 2 + ₹8,850 Phase 3'
-      }
-    },
-    { 
-      value: 'decoding-technical-analysis', 
-      label: 'Only Decoding Technical Analysis (Phase 1)',
-      price: 12000
-    },
-  ];
-
-  const paymentOptions = formData.learningMode === 'offline' ? offlinePaymentOptions : onlinePaymentOptions;
+  const paymentOptions = getPaymentOptions(formData.learningMode);
   const selectedOption = paymentOptions.find(opt => opt.value === formData.paymentMode);
 
   const filteredCounselors = useMemo(() => {
@@ -172,13 +157,19 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
             </div>
           </div>
           <div className="mt-3 rounded-2xl border border-white/60 bg-white/80 max-h-64 overflow-y-auto shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-            {filteredCounselors.length === 0 && (
+            {isLoadingCounselors && (
+              <div className="px-4 py-3 text-sm text-muted-foreground font-body">
+                Loading counselors...
+              </div>
+            )}
+            {!isLoadingCounselors && filteredCounselors.length === 0 && (
               <div className="px-4 py-3 text-sm text-muted-foreground font-body">
                 No counselors found. Try a different search.
               </div>
             )}
             {filteredCounselors.map((counselor) => {
-              const displayName = counselor.name.toUpperCase();
+              const displayName = counselor.name;
+              const displayLabel = counselor.name.toUpperCase();
               const isSelected = formData.selectedCounselor === displayName;
               return (
                 <button
@@ -194,7 +185,7 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
                       : 'hover:bg-black/5'
                   }`}
                 >
-                  {displayName}
+                  {displayLabel}
                 </button>
               );
             })}
@@ -207,7 +198,9 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
           )}
           {counselorLoadError && (
             <p className="mt-1 text-xs text-muted-foreground font-body">
-              Showing default counselor list. {counselorLoadError}
+              {counselorLoadError.includes('COUNSELORS_SHEET_CSV_URL')
+                ? `Showing default counselor list. ${counselorLoadError}`
+                : counselorLoadError}
             </p>
           )}
           <p className="mt-2 text-xs text-muted-foreground font-body flex items-start">

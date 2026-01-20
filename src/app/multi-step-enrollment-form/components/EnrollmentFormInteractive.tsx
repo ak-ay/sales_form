@@ -11,6 +11,7 @@ import PriceAndCounselorStep from './PriceAndCounselorStep';
 import { submitToGoogleSheets } from '@/utils/googleSheetsService';
 import { createEnrollmentRecord, isSupabaseConfigured } from '@/utils/enrollmentService';
 import { getCounselorDisplay } from '@/utils/counselors';
+import { findPaymentOption } from '@/utils/pricing';
 
 interface FormData {
   fullName: string;
@@ -171,6 +172,13 @@ const EnrollmentFormInteractive = () => {
       // Generate enrollment ID
       const enrollmentId = `TMA${new Date().getFullYear()}${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
       const counselorName = getCounselorDisplay(formData.selectedCounselor, { includeSpecialization: false });
+      const paymentOption = findPaymentOption(formData.learningMode, formData.paymentMode);
+      const hasDiscount = Boolean(formData.selectedCounselor && paymentOption?.discountedPrice);
+      const totalFee = paymentOption?.price;
+      const finalFee = hasDiscount ? paymentOption?.discountedPrice : paymentOption?.price;
+      const discountFee = hasDiscount && typeof paymentOption?.price === 'number' && typeof paymentOption?.discountedPrice === 'number'
+        ? paymentOption.price - paymentOption.discountedPrice
+        : 0;
       
       // CRITICAL: Submit to Google Sheets - enrollment will fail if this fails
       console.log('📊 Submitting enrollment data to Google Sheets...');
@@ -184,6 +192,12 @@ const EnrollmentFormInteractive = () => {
         preferredTimeSlot: formData.preferredTimeSlot,
         paymentMode: formData.paymentMode,
         selectedCounselor: counselorName,
+        courseName: paymentOption?.label,
+        batchMonth: formData.preferredBatchMonth,
+        trainingMode: formData.learningMode,
+        totalFee,
+        discountFee,
+        finalFee,
         timestamp: new Date().toISOString(),
         enrollmentId: enrollmentId,
       });
@@ -389,10 +403,7 @@ const EnrollmentFormInteractive = () => {
               {tokenNumber !== null && (
                 <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3">
                   <p className="text-sm text-emerald-800 font-body">
-                    This is your token number
-                  </p>
-                  <p className="text-2xl font-headline font-bold text-emerald-700">
-                    #{tokenNumber}
+                    Your token number has been emailed to you.
                   </p>
                 </div>
               )}

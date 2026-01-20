@@ -114,6 +114,12 @@ export async function POST(request: NextRequest) {
         reminderType: 'confirmation',
         counselorName: body.counselor || 'Not Selected',
         tokenNumber: tokenNumber,
+        courseName: body.courseName,
+        batchMonth: body.batchMonth || body.batch_month,
+        trainingMode: body.trainingMode || body.mode,
+        totalFee: body.totalFee,
+        discountFee: body.discountFee,
+        finalFee: body.finalFee,
       };
 
       const content = buildEmailContent(emailPayload);

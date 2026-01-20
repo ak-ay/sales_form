@@ -7,4 +7,10 @@ export interface SendEmailParams {
   reminderType: ReminderType;
   counselorName: string;
   tokenNumber?: number;
+  courseName?: string;
+  batchMonth?: string;
+  trainingMode?: string;
+  totalFee?: number;
+  discountFee?: number;
+  finalFee?: number;
 }

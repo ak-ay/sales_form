@@ -14,6 +14,12 @@ interface EnrollmentData {
   preferredTimeSlot: string;
   paymentMode: string;
   selectedCounselor: string;
+  courseName?: string;
+  batchMonth?: string;
+  trainingMode?: string;
+  totalFee?: number;
+  discountFee?: number;
+  finalFee?: number;
   timestamp?: string;
   enrollmentId?: string;
 }
@@ -57,6 +63,12 @@ export async function submitToGoogleSheets(
     time_slot: data.preferredTimeSlot || 'N/A',
     payment_mode: data.paymentMode,
     counselor: getCounselorDisplay(data.selectedCounselor, { includeSpecialization: false }) || 'Not selected',
+    courseName: data.courseName,
+    batchMonth: data.batchMonth,
+    trainingMode: data.trainingMode,
+    totalFee: data.totalFee,
+    discountFee: data.discountFee,
+    finalFee: data.finalFee,
     timestamp: data.timestamp || `${timestamp} IST`,
     enrollmentId: data.enrollmentId || '',
   };
