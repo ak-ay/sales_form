@@ -11,6 +11,16 @@ export type PaymentOption = {
 
 export const offlinePaymentOptions: PaymentOption[] = [
   { value: 'full-payment', label: 'Full Payment', price: 47000, discountedPrice: 30000 },
+  {
+    value: 'part-payment',
+    label: 'Part Payment',
+    price: 47000,
+    discountedPrice: 35600,
+    installments: {
+      regular: '₹23,500 Phase 1 + ₹23,500 Phase 2',
+      discounted: '₹17,800 Phase 1 + ₹17,800 Phase 2',
+    },
+  },
 ];
 
 export const onlinePaymentOptions: PaymentOption[] = [
