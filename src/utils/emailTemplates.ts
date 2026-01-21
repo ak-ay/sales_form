@@ -56,10 +56,16 @@ export function buildEmailContent(params: SendEmailParams) {
               <h3 class="section-title">📌 Registration Details</h3>
               ${
                 typeof params.tokenNumber === 'number'
-                  ? `<p><strong>Token Number:</strong> #${params.tokenNumber}</p>`
+                  ? `<div style="margin: 18px 0;">
+                      <div style="font-size: 12px; color: #4b5563; text-transform: uppercase; letter-spacing: 0.08em;">Token Number</div>
+                      <div style="font-size: 28px; font-weight: bold; color: #111827;">#${params.tokenNumber}</div>
+                    </div>`
                   : ''
               }
-              <p><strong>Assigned Counselor:</strong> ${counselorName}</p>
+              <div style="margin: 10px 0 18px;">
+                <div style="font-size: 12px; color: #4b5563; text-transform: uppercase; letter-spacing: 0.08em;">Assigned Counselor</div>
+                <div style="font-size: 22px; font-weight: bold; color: #0ea5e9;">${counselorName}</div>
+              </div>
               <table class="details">
                 <tr>
                   <td>Selected Course:</td>
@@ -103,6 +109,15 @@ export function buildEmailContent(params: SendEmailParams) {
                 <li>Experience our teaching methodology</li>
                 <li>Interact with trainers and counselors</li>
                 <li>Evaluate course content and delivery</li>
+              </ul>
+
+              <h3 class="section-title">💳 Payment Terms (Important)</h3>
+              <p>A registration fee of <strong>₹1,000</strong> should be paid within <strong>3 hours</strong> to reserve your seat.</p>
+              <p>The remaining balance course fee must be paid within <strong>10 days</strong> from the date of registration.</p>
+              <p>If the balance payment is not completed within this timeline:</p>
+              <ul>
+                <li>The seat reservation may be cancelled, and</li>
+                <li>The applied discount may be withdrawn, subject to seat availability.</li>
               </ul>
 
               <h3 class="section-title">💯 Refund &amp; Satisfaction Policy</h3>
