@@ -7,6 +7,7 @@ export function buildEmailContent(params: SendEmailParams) {
   );
   const counselorName = params.counselorName || 'Not Selected';
   const formatText = (value?: string) => value?.trim() ? value : 'Not specified';
+  const formatName = (value?: string) => value?.trim() ? value.trim() : 'Student';
   const formatBatchMonth = (value?: string) => {
     if (!value) return 'Not specified';
     return value
@@ -46,10 +47,19 @@ export function buildEmailContent(params: SendEmailParams) {
         <body>
           <div class="container">
             <div class="header">
-              <h1>🎓 TradeMax Academy</h1>
+              <div style="margin-bottom: 12px;">
+                <img
+                  src="https://www.trademaxadmissions.com/assets/images/Logo_icon-35__1_-1768362587986.png"
+                  alt="TradeMax Academy Logo"
+                  width="140"
+                  style="display: block; margin: 0 auto; max-width: 100%; height: auto;"
+                />
+              </div>
+              <h1>TradeMax Academy</h1>
               <p>Registration Confirmation</p>
             </div>
             <div class="content">
+              <p><strong>Dear ${formatName(params.fullName)},</strong></p>
               <p>Greetings from TradeMax Academy 👋</p>
               <p>Thank you for completing your registration with us. Your seat reservation is successful. We’re excited to have you onboard and are pleased to share the details of your selected program.</p>
 
