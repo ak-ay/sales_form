@@ -18,7 +18,6 @@ interface EnrollmentData {
   batchMonth?: string;
   trainingMode?: string;
   paymentModeLabel?: string;
-  preferredTimeSlot?: string;
   totalFee?: number;
   discountFee?: number;
   finalFee?: number;
@@ -182,8 +181,11 @@ export async function testGoogleSheetsConnection(): Promise<{
       fullName: 'Test User',
       email: 'test@example.com',
       phone: '+1234567890',
+      learningMode: 'online',
       preferredBatchMonth: 'Test Month',
+      preferredTimeSlot: 'N/A',
       paymentMode: 'Test',
+      selectedCounselor: 'Not selected',
       timestamp: new Date().toISOString(),
       enrollmentId: 'TEST-001',
     };

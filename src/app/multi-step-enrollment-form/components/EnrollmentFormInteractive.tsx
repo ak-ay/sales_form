@@ -11,7 +11,7 @@ import PriceAndCounselorStep from './PriceAndCounselorStep';
 import { submitToGoogleSheets } from '@/utils/googleSheetsService';
 import { createEnrollmentRecord, isSupabaseConfigured } from '@/utils/enrollmentService';
 import { getCounselorDisplay } from '@/utils/counselors';
-import { findPaymentOption } from '@/utils/pricing';
+import { findPaymentOption, isEarlyBirdWindow } from '@/utils/pricing';
 
 interface FormData {
   fullName: string;
@@ -173,7 +173,11 @@ const EnrollmentFormInteractive = () => {
       const enrollmentId = `TMA${new Date().getFullYear()}${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
       const counselorName = getCounselorDisplay(formData.selectedCounselor, { includeSpecialization: false });
       const paymentOption = findPaymentOption(formData.learningMode, formData.paymentMode);
-      const hasDiscount = Boolean(formData.selectedCounselor && paymentOption?.discountedPrice);
+      const earlyBirdActive = isEarlyBirdWindow();
+      const hasDiscount = Boolean(
+        earlyBirdActive &&
+        typeof paymentOption?.discountedPrice === 'number'
+      );
       const totalFee = paymentOption?.price;
       const finalFee = hasDiscount ? paymentOption?.discountedPrice : paymentOption?.price;
       const discountFee = hasDiscount && typeof paymentOption?.price === 'number' && typeof paymentOption?.discountedPrice === 'number'
@@ -197,7 +201,6 @@ const EnrollmentFormInteractive = () => {
         batchMonth: formData.preferredBatchMonth,
         trainingMode: formData.learningMode,
         paymentModeLabel,
-        preferredTimeSlot: formData.preferredTimeSlot,
         totalFee,
         discountFee,
         finalFee,

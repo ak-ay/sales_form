@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Icon from '@/components/ui/AppIcon';
 import { counselors } from '@/utils/counselors';
-import { getPaymentOptions } from '@/utils/pricing';
+import { getPaymentOptions, isEarlyBirdWindow } from '@/utils/pricing';
 
 interface PriceAndCounselorStepProps {
   formData: {
@@ -59,6 +59,7 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
       isMounted = false;
     };
   }, []);
+  const earlyBirdActive = isEarlyBirdWindow();
   const paymentOptions = getPaymentOptions(formData.learningMode);
   const selectedOption = paymentOptions.find(opt => opt.value === formData.paymentMode);
 
@@ -80,12 +81,19 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
           Course Price & Discount
         </h2>
         <p className="text-muted-foreground font-body">
-          Review your price and select a counselor for discount
+          Review your price and select a counselor
         </p>
       </div>
 
       {/* Price Display Section */}
       <div className="bg-white/70 border border-white/60 rounded-3xl p-8 text-center shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+        <div className={`mb-4 inline-flex items-center rounded-full px-4 py-2 text-xs font-semibold ${
+          earlyBirdActive ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+        }`}>
+          {earlyBirdActive
+            ? 'Early Bird pricing is active (19th - 27th)'
+            : 'Early Bird pricing is closed (opens 19th - 27th)'}
+        </div>
         <div className="mb-4">
           <Icon name="CreditCardIcon" size={42} variant="outline" className="text-primary mx-auto" />
         </div>
@@ -95,7 +103,7 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
         
         {selectedOption && 'price' in selectedOption && (
           <div className="space-y-2">
-            {formData.selectedCounselor && 'discountedPrice' in selectedOption ? (
+            {earlyBirdActive && 'discountedPrice' in selectedOption && typeof selectedOption.discountedPrice === 'number' ? (
               <>
                 <div className="text-2xl text-muted-foreground line-through font-body">
                   ₹{selectedOption.price.toLocaleString()}
@@ -114,9 +122,9 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
               </div>
             )}
             
-            {selectedOption.value === 'part-payment' && 'installments' in selectedOption && (
+            {selectedOption.value === 'part-payment' && selectedOption.installments && (
               <p className="text-sm text-muted-foreground font-body mt-3">
-                {formData.selectedCounselor ? selectedOption.installments.discounted : selectedOption.installments.regular}
+                {earlyBirdActive ? selectedOption.installments.discounted : selectedOption.installments.regular}
               </p>
             )}
           </div>
@@ -128,10 +136,10 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
         <div className="mb-4">
           <h3 className="text-xl font-headline font-semibold text-foreground mb-2 flex items-center">
             <Icon name="UserGroupIcon" size={22} variant="outline" className="mr-2 text-primary" />
-            Select Counselor for Discount
+            Select Counselor
           </h3>
           <p className="text-sm text-muted-foreground font-body">
-            Choose a counselor to receive special discount pricing
+            Choose your counselor for enrollment support
           </p>
         </div>
 
