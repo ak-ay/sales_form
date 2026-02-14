@@ -3,6 +3,7 @@ export type PaymentOption = {
   label: string;
   price: number;
   discountedPrice?: number;
+  earlyBirdDiscountedPrice?: number;
   installments?: {
     regular: string;
     discounted: string;
@@ -26,27 +27,41 @@ export function isEarlyBirdWindow(date: Date = new Date()): boolean {
 }
 
 export const offlinePaymentOptions: PaymentOption[] = [
-  { value: 'full-payment', label: 'Full Payment', price: 47000, discountedPrice: 27500 },
+  {
+    value: 'full-payment',
+    label: 'Full Payment',
+    price: 47000,
+    discountedPrice: 30000,
+    earlyBirdDiscountedPrice: 27500,
+  },
   {
     value: 'part-payment',
     label: 'Part Payment',
     price: 47000,
+    discountedPrice: 35600,
     installments: {
       regular: '₹23,500 Phase 1 + ₹23,500 Phase 2',
-      discounted: '₹23,500 Phase 1 + ₹23,500 Phase 2',
+      discounted: '₹17,800 Phase 1 + ₹17,800 Phase 2',
     },
   },
 ];
 
 export const onlinePaymentOptions: PaymentOption[] = [
-  { value: 'full-payment', label: 'Full Payment', price: 30000, discountedPrice: 17500 },
+  {
+    value: 'full-payment',
+    label: 'Full Payment',
+    price: 30000,
+    discountedPrice: 20000,
+    earlyBirdDiscountedPrice: 17500,
+  },
   {
     value: 'part-payment',
     label: 'Part Payment',
     price: 36000,
+    discountedPrice: 23600,
     installments: {
       regular: '₹12,000 Phase 1 + ₹12,000 Phase 2 + ₹12,000 Phase 3',
-      discounted: '₹12,000 Phase 1 + ₹12,000 Phase 2 + ₹12,000 Phase 3',
+      discounted: '₹5,900 Phase 1 + ₹8,850 Phase 2 + ₹8,850 Phase 3',
     },
   },
   {
@@ -58,22 +73,9 @@ export const onlinePaymentOptions: PaymentOption[] = [
 
 export const getPaymentOptions = (
   learningMode: string,
-  referenceDate: Date = new Date()
-): PaymentOption[] => {
-  const options = learningMode === 'offline' ? offlinePaymentOptions : onlinePaymentOptions;
-  if (isEarlyBirdWindow(referenceDate)) {
-    return options;
-  }
-
-  // Outside early-bird window, hide reduced pricing while keeping base prices available.
-  return options.map((option) => ({
-    ...option,
-    discountedPrice: undefined,
-    installments: option.installments
-      ? { regular: option.installments.regular, discounted: option.installments.regular }
-      : undefined,
-  }));
-};
+  _referenceDate: Date = new Date()
+): PaymentOption[] =>
+  learningMode === 'offline' ? offlinePaymentOptions : onlinePaymentOptions;
 
 export const findPaymentOption = (
   learningMode: string,

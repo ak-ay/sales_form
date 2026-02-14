@@ -62,6 +62,12 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
   const earlyBirdActive = isEarlyBirdWindow();
   const paymentOptions = getPaymentOptions(formData.learningMode);
   const selectedOption = paymentOptions.find(opt => opt.value === formData.paymentMode);
+  const hasCounselorSelection = Boolean(formData.selectedCounselor);
+  const effectiveDiscountedPrice = selectedOption
+    ? earlyBirdActive && typeof selectedOption.earlyBirdDiscountedPrice === 'number'
+      ? selectedOption.earlyBirdDiscountedPrice
+      : selectedOption.discountedPrice
+    : undefined;
 
   const filteredCounselors = useMemo(() => {
     const query = counselorSearch.trim().toLowerCase();
@@ -103,13 +109,13 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
         
         {selectedOption && 'price' in selectedOption && (
           <div className="space-y-2">
-            {earlyBirdActive && 'discountedPrice' in selectedOption && typeof selectedOption.discountedPrice === 'number' ? (
+            {hasCounselorSelection && typeof effectiveDiscountedPrice === 'number' ? (
               <>
                 <div className="text-2xl text-muted-foreground line-through font-body">
                   ₹{selectedOption.price.toLocaleString()}
                 </div>
                 <div className="text-5xl font-semibold text-primary font-headline">
-                  ₹{selectedOption.discountedPrice.toLocaleString()}
+                  ₹{effectiveDiscountedPrice.toLocaleString()}
                 </div>
                 <div className="inline-flex items-center bg-success/10 text-success px-4 py-2 rounded-full text-sm font-semibold font-body mt-2">
                   <Icon name="CheckCircleIcon" size={16} variant="solid" className="inline mr-1" />
@@ -124,7 +130,7 @@ const PriceAndCounselorStep = ({ formData, errors, onInputChange }: PriceAndCoun
             
             {selectedOption.value === 'part-payment' && selectedOption.installments && (
               <p className="text-sm text-muted-foreground font-body mt-3">
-                {earlyBirdActive ? selectedOption.installments.discounted : selectedOption.installments.regular}
+                {hasCounselorSelection ? selectedOption.installments.discounted : selectedOption.installments.regular}
               </p>
             )}
           </div>

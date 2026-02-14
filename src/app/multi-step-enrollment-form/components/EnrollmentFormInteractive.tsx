@@ -174,14 +174,19 @@ const EnrollmentFormInteractive = () => {
       const counselorName = getCounselorDisplay(formData.selectedCounselor, { includeSpecialization: false });
       const paymentOption = findPaymentOption(formData.learningMode, formData.paymentMode);
       const earlyBirdActive = isEarlyBirdWindow();
+      const effectiveDiscountedPrice = paymentOption
+        ? earlyBirdActive && typeof paymentOption.earlyBirdDiscountedPrice === 'number'
+          ? paymentOption.earlyBirdDiscountedPrice
+          : paymentOption.discountedPrice
+        : undefined;
       const hasDiscount = Boolean(
-        earlyBirdActive &&
-        typeof paymentOption?.discountedPrice === 'number'
+        formData.selectedCounselor &&
+        typeof effectiveDiscountedPrice === 'number'
       );
       const totalFee = paymentOption?.price;
-      const finalFee = hasDiscount ? paymentOption?.discountedPrice : paymentOption?.price;
-      const discountFee = hasDiscount && typeof paymentOption?.price === 'number' && typeof paymentOption?.discountedPrice === 'number'
-        ? paymentOption.price - paymentOption.discountedPrice
+      const finalFee = hasDiscount ? effectiveDiscountedPrice : paymentOption?.price;
+      const discountFee = hasDiscount && typeof paymentOption?.price === 'number' && typeof effectiveDiscountedPrice === 'number'
+        ? paymentOption.price - effectiveDiscountedPrice
         : 0;
       const paymentModeLabel = paymentOption?.label;
       
